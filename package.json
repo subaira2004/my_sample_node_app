@@ -1,0 +1,16 @@
+{
+  "name": "test_node_project",
+  "version": "1.0.0",
+  "description": "This is just a test project to explore node",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zubair",
+  "license": "ISC",
+  "private": "true",
+  "dependencies": {
+    "express": "^4.16.1",
+    "pug": "^2.0.0-rc.4"
+  }
+}
