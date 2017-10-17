@@ -1,0 +1,21 @@
+doctype html
+html
+    head
+        title  User
+        style(type="text/css").
+            th,td{border:1px solid;width:25%}
+            th{background-color:blue;color:white}
+body
+    table(style='width:100%;border:1px solid;border-collapse:collapse')
+        tr
+            th H1
+            th H2
+            th H3
+            th H4
+        each val in users  
+            tr 
+                td  name 
+                td #{val.name  }
+                td  age 
+                td #{val.age}
+    a(href="/") back
