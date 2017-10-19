@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
-const routes = require('./routes/routes.js');
+const routes = require('./routes');
 
 app.set('view engine', 'pug');
 
 app.use(express.static('public'));
 
-app.use('/',routes);
+app.use(routes);
 
-app.listen(2500, function () {
+app.listen(2500, () => {
   console.log('Example app listening on port 2500!');
 })
