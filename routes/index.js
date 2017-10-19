@@ -1,11 +1,11 @@
 
 var routes = require('express').Router();
 const home = require('../home.js');
-const users = require('../app_modules/users.js');
+const users = require('../app_modules/users');
 
 
-routes.get('/',home);
+routes.all('/',home);
 
-routes.get('/users', users);
+routes.all('/users', users);
 
 module.exports = routes;
