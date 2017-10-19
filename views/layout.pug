@@ -19,7 +19,7 @@ html
                         span( class="icon-bar")
                         span( class="icon-bar")
                         span( class="icon-bar")
-                    a(class="navbar-brand" href="/") My Site
+                    a(class="navbar-brand" href=(menu=="home"?"#":"/")) My Site
                 div( class="collapse navbar-collapse" id="menu")
                     ul( class="nav navbar-nav")
                         li(class=(menu=="home"?"active":""))
