@@ -1,0 +1,29 @@
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        meta( http-equiv="X-UA-Compatible" content="ie=edge")
+        title #{title}
+        block csses
+            link( rel="stylesheet" type="text/css" href="./css/bootstrap.css")
+        block scripts
+            script( src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+            script( src="./js/bootstrap.js")
+    body
+        nav( class="navbar navbar-default navbar-static-top")
+            div(class="container-fluid")
+                button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu" aria-expanded="false")
+                    span( class="sr-only") Toggle navigation
+                    span( class="icon-bar")
+                    span( class="icon-bar")
+                    span( class="icon-bar")
+                a(class="navbar-brand" href="/") My Site
+                div( class="collapse navbar-collapse" id="menu")
+                    ul( class="nav navbar-nav")
+                        li(class=(menu=="home"?"active":""))
+                            a(href=(menu=="home"?"#":"/")) Home
+                        li(class=(menu=="users"?"active":""))
+                            a(href=(menu=="users"?"#":"/users")) Users
+        div( class="container-fluid")
+            block content-body
