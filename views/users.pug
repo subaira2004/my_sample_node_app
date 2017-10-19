@@ -1,12 +1,6 @@
-doctype html
-html
-    head
-        title  User
-        style(type="text/css").
-            th,td{border:1px solid;width:25%}
-            th{background-color:blue;color:white}
-body
-    table(style='width:100%;border:1px solid;border-collapse:collapse')
+extends layout.pug
+block content-body
+    table( class="table table-default table-striped table-bordered" style='width:100%;border:1px solid;border-collapse:collapse')
         tr
             th H1
             th H2
@@ -18,4 +12,4 @@ body
                 td #{val.name  }
                 td  age 
                 td #{val.age}
-    a(href="/") back
+    a(href="/" class="btn btn-primary") back
