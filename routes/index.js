@@ -1,6 +1,6 @@
 
 var routes = require('express').Router();
-const home = require('../home.js');
+const home = require('../app_modules/home');
 const users = require('../app_modules/users');
 
 
