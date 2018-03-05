@@ -1,5 +1,12 @@
+const routes = require('express').Router()
+routes.get('/', (req, res) => {
+    var user = req.session ? req.session.user : null;
 
-var home = (req, res) => {    
-    res.render('home/home', {  title:'Welcome to My Site', menu:'home' });
-}
-module.exports = home;
+    res.render('home/home', {
+        title: 'Welcome to My Site',
+        menu: 'home',
+        user:user
+    });
+})
+
+module.exports = routes;

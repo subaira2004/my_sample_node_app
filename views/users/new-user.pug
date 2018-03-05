@@ -1,0 +1,22 @@
+extends ../layout.pug
+block content-body
+    div(class='container-fluid')
+        form(action="/users/new" id="new-form" method="post" class="form-horizontal col-sm-5" enctype="application/x-www-form-urlencoded")
+            div(class="form-group")
+                label(for="name"  class="col-sm-5 control-label") name
+                div(class="col-sm-7")
+                    input(type="text" name="name" class="form-control"  id="name" value="")
+            div(class="form-group")
+                label(for="age"  class="col-sm-5 control-label") age
+                div(class="col-sm-7")
+                    input(type="text" name="age"  class="form-control"  id="age" value="")
+            div(class="form-group")
+                label(for="age"  class="col-sm-5 control-label") Department
+                div(class="col-sm-7")
+                    input(type="text" name="department"  class="form-control"  id="department" value="")
+            div(class="form-group")
+                label(for="age"  class="col-sm-5 control-label") Designation
+                div(class="col-sm-7")
+                    input(type="text" name="designation" class="form-control"  id="designation" value="")
+            input(type="submit" value="Add" class="btn btn-primary") 
+    a(href="/users" class="btn btn-primary") back to list

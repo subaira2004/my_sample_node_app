@@ -11,14 +11,16 @@
   "private": true,
   "dependencies": {
     "body-parser": "^1.18.2",
-    "bootstrap": "^3.3.7",
+    "connect-mongo": "^2.0.1",
     "cookie-parser": "^1.4.3",
-    "express": "^4.16.1",
+    "crypto": "^1.0.1",
+    "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "mongodb": "^3.0.3",
     "morgan": "^1.9.0",
-    "pug": "^2.0.0-rc.4"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.1"
+    "nodemailer": "^4.6.0",
+    "passport": "^0.4.0",
+    "pug": "^2.0.0-rc.4",
+    "uuid": "^3.2.1"
   }
 }

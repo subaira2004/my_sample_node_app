@@ -1,0 +1,26 @@
+extends ../layout.pug
+block content-body
+    - var readonlyAttr =!IsEditMode?{readonly:true}:{};
+    div(class='container-fluid')
+        form( class="form-horizontal col-sm-5" action=(IsEditMode?"/users/edit":"") id=(IsEditMode?"edit-form":"view-form") method=(IsEditMode?"post":"get") enctype=(IsEditMode?"application/x-www-form-urlencoded":""))
+            div(class="form-group")
+                label(for="name"  class="col-sm-5 control-label") name
+                div(class="col-sm-7")
+                    input(type="text" class="form-control" readonly="true"  name="name" id="name" value=user.name)
+            div(class="form-group")
+                label(for="age"  class="col-sm-5 control-label") age
+                div(class="col-sm-7")
+                    input(type="text" class="form-control" name="age" id="age" value=user.age)&attributes(readonlyAttr)
+            div(class="form-group")
+                label(for="age"  class="col-sm-5 control-label") Department
+                div(class="col-sm-7")
+                    input(type="text" class="form-control" name="department" id="department" value=user.department)&attributes(readonlyAttr)
+            div(class="form-group")
+                label(for="age"  class="col-sm-5 control-label") Designation
+                div(class="col-sm-7")
+                    input(type="text" class="form-control" name="designation"  id="designation" value=user.designation)&attributes(readonlyAttr)
+            if(IsEditMode)
+                div(class="form-group")
+                    div(class="col-sm-7")
+                        input(type="submit" class="btn btn-primary" href="/users/edit" value="Update")
+    a(href="/users" class="btn btn-primary") back to list
