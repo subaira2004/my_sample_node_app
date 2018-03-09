@@ -1,0 +1,167 @@
+<!<!DOCTYPE>
+<html>
+
+<head>
+    <title>Shami Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Verdana, Geneva, Tahoma, sans-serif;
+            font-size: medium;
+            background-color: brown;
+        }
+
+        form {
+            margin-top: 50px;
+            margin-left: 35%;
+            width: 350px;
+            padding: 10px 10px 10px 50px;
+            background-color: #e69696;
+            border: 1px solid white;
+            color: rgb(22, 20, 20);
+            border-radius: 10px;
+
+        }
+
+        .lable {
+            min-width: 100px;
+            width: 100px;
+            min-height: 25px;
+            height: 25px;
+        }
+
+        .form-group {
+            padding: 5px;
+            min-height: 30px;
+
+            height: auto;
+        }
+
+        input[type=text]:focus,
+        select:focus {
+            box-shadow: 1px 1px 1px 1px red;
+        }
+
+        input[type=text],
+        select {
+            width: 300px;
+            padding: 5px;
+            height: 40px;
+            border-radius: 5px;
+            border: hidden;
+        }
+
+        textarea {
+            height: 100px;
+            min-height: 100px;
+            width: 300px;
+            max-width: 300px;
+            min-width: 300px;
+            max-height: 300px;
+            border-radius: 5px;
+        }
+
+        input[type=button] {
+            padding: 10px;
+            background-color: #132d66;
+            color: white;
+            border: hidden;
+            cursor: pointer;
+            width: 100px;
+            height: 50px;
+            border-radius: 5px;
+        }
+
+        .grdResult {
+            width: 500px;
+            border-collapse: collapse;
+            display: table;
+            border: hidden;
+        }
+
+        .grdResult tr:first-child th:first-child {
+            border-radius: 5px 0 0 0;
+        }
+
+        .grdResult tr:first-child th:last-child {
+            border-radius: 0 5px 0 0;
+        }
+
+        .grdResult tr:last-child td:first-child {
+            border-radius: 0 0 0 5px;
+        }
+
+        .grdResult tr:last-child td:last-child {
+            border-radius: 0 0 5px 0;
+        }
+
+        .grdResult tr {
+            border-radius: 5px;
+        }
+
+        .grdResult th {
+            background-color: #e69696;
+            color: white
+        }
+
+        .grdResult td,
+        .grdResult th {
+            padding: 10px;
+            border: 1px solid grey;
+        }
+
+        .grdResult td {
+            background-color: white;
+
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <input type="hidden" id="hId" value="">
+        <div class="form-group">
+            <div class="lable">Name</div>
+            <input type="text" id="txtName" />
+        </div>
+        <div class="form-group">
+            <div class="lable">Age</div>
+            <input type="text" id="txtAge" />
+        </div>
+        <div class="form-group">
+            <div class="lable">Gender</div>
+            <select id="selGender">
+                <option value="0">--Select--</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <div class="lable">Remarks</div>
+            <textarea id="taRemarks"></textarea>
+        </div>
+        <div class="form-group">
+            <center class="form-group">
+                <input type="button" id="btnSave" value="Save" />
+                <input type="button" id="btnClear" value="Clear" />
+            </center>
+        </div>
+        <input type="file" />
+    </form>
+    <div id="divResult" style="text-align:centre;width:100%;display:none">
+        <div style="margin:auto;width:500px">
+            <table id='tblResult' class="grdResult">
+                <tr id='trResultHead'>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script src="./SamiScript.js"></script>
+
+</body>
+
+</html>
