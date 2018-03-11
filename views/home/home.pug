@@ -1,5 +1,7 @@
 extends ../layout.pug
 block content-body
-    div(class="jumbotron")
+    div(class="jumbotron" id="helloApp")
         h1 hello,
         p This is my site please welcome.
+block scripts
+    script(src="./home.js")

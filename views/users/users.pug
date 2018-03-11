@@ -1,15 +1,25 @@
 extends ../layout.pug
 block content-body
+    a(href="/Users/new" class="btn btn-primary") New
     table( class="table table-default table-striped table-bordered" style='width:100%;border:1px solid;border-collapse:collapse')
-        tr
-            th H1
-            th H2
-            th H3
-            th H4
+        tr(style="background-color:#888;color:white;")
+            th name
+            th age
+            th department
+            th designation
+            th Action
         each val in users  
-            tr 
-                td  name 
-                td #{val.name  }
-                td  age 
-                td #{val.age}
+            tr
+                td
+                    if(menu=="users")
+                        a(href="/users/"+val.name ) #{val.name}
+                    else
+                        span  #{val.name}
+                td #{val.age}  
+                td #{val.department} 
+                td #{val.designation}               
+                td 
+                    a(href="/users/edit/"+val.name class="btn btn-primary") Edit
+                    span()  
+                    a(href="/users/delete/"+val.name class="btn btn-primary") delete
     a(href="/" class="btn btn-primary") back
