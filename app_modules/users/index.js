@@ -1,8 +1,11 @@
-const routes = require('express').Router()
-const Students = require('../Data/Students')
+const express = require('express');
+const routes = require('express').Router();
+const Students = require('../Data/Students');
 const bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+routes.use(express.static('../views/users/js'));
 
 routes.get('/', (req, res) => {
     var user = req.session ? req.session.user : null;
