@@ -30,7 +30,7 @@ class User extends React.Component {
                         this.state.users.map((user)=>
                             <tr>
                                 <td>
-                                    <a href="/users/"{user.name} > {user.name}</a>
+                                    <a href={"/users/"+user.name} > {user.name}</a>
                                 </td>
                                 <td>
                                     {user.age}
@@ -42,8 +42,8 @@ class User extends React.Component {
                                     {user.designation}
                                 </td>
                                 <td>
-                                    <a  href="/users/edit/"{user.name} class="btn btn-primary" > Edit</a>&nbsp;
-                                    <a href="/users/delete/"{user.name} class="btn btn-primary"> delete</a>
+                                    <a  href={"/users/edit/"+user.name} class="btn btn-primary" > Edit</a>&nbsp;
+                                    <a href={"/users/delete/"+user.name} class="btn btn-primary"> delete</a>
                                 </td>
                             </tr>
                         );

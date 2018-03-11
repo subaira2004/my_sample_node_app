@@ -26,6 +26,5 @@ block content-body
     //- a(href="/" class="btn btn-primary") back
     
 block scripts
-    script
-        var users=users;
+    script() var users=#{eval(users)};
     script(src="./user/user.js")
