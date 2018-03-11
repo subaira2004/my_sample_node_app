@@ -26,7 +26,7 @@ html
                         a(href=(menu=="home"?"#":"/")) Home
                     if(user)
                         li(class=(menu=="users"||menu=="single-user"?"active":""))
-                            a(href=(menu=="users"?"#":"/users")) Users
+                            a(href=(menu=="users"?"/users#":"/users")) Users
                 if(menu!="login")
                     if(user)
                         ul(class="nav navbar-nav navbar-right")

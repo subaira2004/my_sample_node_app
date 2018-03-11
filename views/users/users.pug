@@ -9,8 +9,8 @@ block content-body
             th designation
             th Action
         each val in users  
-            tr 
-                td 
+            tr
+                td
                     if(menu=="users")
                         a(href="/users/"+val.name ) #{val.name}
                     else
