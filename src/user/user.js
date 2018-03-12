@@ -2,6 +2,61 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
+
+class UserEntry extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            mode: props.mode,
+            show: props.show,
+            onChange: props.onChange,
+            formData:props.formData
+        }
+    }
+    onsubmit() {
+
+    }
+
+    render() {
+        return (
+            <div className="modal" tabIndex={-1} role="dialog">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">{this.state.mode}</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <form onSubmit={() => this.onSubmit()}>
+                                <div className="form-group row">
+                                    <label htmlFor="staticEmail" className="col-sm-2 col-form-label">Email</label>
+                                    <div className="col-sm-10">
+                                        <input type="text" readOnly className="form-control-plaintext" id="staticEmail" defaultValue="email@example.com" />
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="inputPassword" className="col-sm-2 col-form-label">Password</label>
+                                    <div className="col-sm-10">
+                                        <input type="password" className="form-control" id="inputPassword" placeholder="Password" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-primary">Save changes</button>
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+
+
 class User extends React.Component {
     constructor(props) {
         super(props);
@@ -70,9 +125,8 @@ class User extends React.Component {
     }
 
 
-    handleClick(e) {
-        console.log(e);
-        alert('hi');
+    handleClick() {
+
     }
 
     render() {
@@ -80,14 +134,14 @@ class User extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="col-sm-12">
-                        <input type="button" className="btn btn-primary" value="New" onClick={(e) => this.handleClick(e)} />
+                        <input type="button" className="btn btn-primary" value="New" onClick={() => this.handleClick()} />
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-sm-12">{this.renderGrid(this.state.users)}
                     </div>
                 </div>
-
+                <UserEntry />
             </div>
         );
     }
