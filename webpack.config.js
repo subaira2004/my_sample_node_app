@@ -27,7 +27,7 @@ const userConfigs = {
   },
   output: {
     filename: 'user.js',
-    path: path.resolve(__dirname, 'views/users/js')
+    path: path.resolve(__dirname, 'views/users/dist')
   }
 };
 

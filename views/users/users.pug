@@ -24,7 +24,6 @@ block content-body
     //-                 span()  
     //-                 a(href="/users/delete/"+val.name class="btn btn-primary") delete
     //- a(href="/" class="btn btn-primary") back
-    
-block scripts
-    script() var users=#{eval(users)};
-    script(src="./user/user.js")
+
+block scriptsbottom    
+    script(src="users/dist/user.js")
