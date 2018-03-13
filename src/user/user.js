@@ -11,11 +11,13 @@ class UserEntry extends React.Component {
             mode: props.data.mode,
             show: props.data.show,
             onChange: props.data.onChange,
-            formData: props.data.formData
+            formData: props.data.formData,
+            parent:props.data.parent
         }
         this.onSubmit = this.onSubmit.bind(this);
         this.onClose = this.onClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        
     }
 
     toggle(propsNew) {
@@ -23,17 +25,35 @@ class UserEntry extends React.Component {
     }
 
     onSubmit(e) {
-        axios.post('/users/new/ajax', this.state.formData).then(function (res) {
+        axios.post('/users/new/ajax', this.state.formData).then(res=>{
             if (res.data.success) {
-                this.state.onChange(true);
+                this.onModalChange(true);
             }
         })
         e.preventDefault();
     }
 
     onClose(e) {
-        this.state.onChange(false);
+        this.onModalChange(false);
         e.preventDefault();
+    }
+
+    onModalChange(isChanged) {        
+        if (isChanged) {            
+            this.state.parent.getData();
+        }
+        this.resetModalData();
+    }
+
+
+    resetModalData() {
+        this.state.parent.setState({
+            modalDataKey: '',
+            showModal: false,
+            modalMode: '',
+            modalData: {name:'', age:'',designation:'',department:''}
+        },()=>
+        this.state.parent.modalToggle());
     }
 
     handleChange(e) {
@@ -189,23 +209,7 @@ class User extends React.Component {
         this.entryModal.toggle({ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData });
     }
 
-    resetModalData() {
-        this.setState({
-            modalDataKey: '',
-            showModal: false,
-            modalMode: '',
-            modalData: {}
-        })
-        modalToggle();
-    }
-
-    onModalChange(isChanged) {
-        console.log(this);
-        if (isChanged) {
-            this.getData();
-        }
-        this.resetModalData();
-    }
+    
 
     render() {
         return (
@@ -219,7 +223,7 @@ class User extends React.Component {
                     <div className="col-sm-12">{this.renderGrid(this.state.users)}
                     </div>
                 </div>
-                <UserEntry onRef={child => this.entryModal = child} data={{ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData, onChange: this.state.onModalChange }} />
+                <UserEntry onRef={child => this.entryModal = child} data={{ parent:this,key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData, onChange: this.state.onModalChange }} />
             </div>
         );
     }
