@@ -114,6 +114,24 @@ routes.post('/new', (req, res) => {
         res.redirect('/');
     }
 });
+routes.post('/new/ajax', (req, res)=> {
+    var result = validateNGetPostData(req.body);
+    if (result.success) {
+        var data = [];
+        data.push(result.data);
+        Students.InsertStudents(function (err) {
+            res.json({success:false,err:'err'+err});
+        }, data, function (insertResult) {
+            if (insertResult.result.ok == 1) {
+                res.json({success:true});
+            } else {
+            res.json({success:false,err:'Not Saved! Something went wrong in DB!'});
+            }
+        });
+    } else {
+        res.json({success:false,err:'Something went wrong!'});
+    }
+});
 
 function validateNGetPostData(body) {
     var result = {
