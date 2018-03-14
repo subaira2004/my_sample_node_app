@@ -10,9 +10,7 @@ class UserEntry extends React.Component {
             key: props.data.key,
             mode: props.data.mode,
             show: props.data.show,
-            onChange: props.data.onChange,
-            formData: props.data.formData,
-            parent:props.data.parent
+            formData: props.data.formData
         }
         this.onSubmit = this.onSubmit.bind(this);
         this.onClose = this.onClose.bind(this);
@@ -20,62 +18,51 @@ class UserEntry extends React.Component {
         
     }
 
-    toggle(propsNew) {
-        this.setState(propsNew);
-    }
-
     onSubmit(e) {
         axios.post('/users/new/ajax', this.state.formData).then(res=>{
             if (res.data.success) {
-                this.onModalChange(true);
+                this.resetModalData();
+                this.props.onChange(true);
             }
         })
         e.preventDefault();
     }
 
     onClose(e) {
-        this.onModalChange(false);
+        this.resetModalData();
+        this.props.onChange(false);
         e.preventDefault();
     }
 
-    onModalChange(isChanged) {        
-        if (isChanged) {            
-            this.state.parent.getData();
-        }
-        this.resetModalData();
-    }
-
-
     resetModalData() {
-        this.state.parent.setState({
-            modalDataKey: '',
-            showModal: false,
-            modalMode: '',
-            modalData: {name:'', age:'',designation:'',department:''}
-        },()=>
-        this.state.parent.modalToggle());
+        this.setState({
+            formData: {name:'', age:'',designation:'',department:''}
+        });
     }
 
     handleChange(e) {
         const elem = e.target;
-        this.state.formData[elem.name] =elem.value;        
+    
+        this.setState((prevState,prop)=>{
+            const curFormData = prevState.formData;
+            curFormData[elem.name]= elem.value;
+            this.props.data.formData = curFormData; 
+            return {
+                formData : curFormData            
+            }
+        });
         e.preventDefault();
     }
-    componentDidMount() {
-        this.props.onRef(this)
-    }
-
-    componentWillUnmount() {
-        this.props.onRef(undefined)
-    }
+    
 
     render() {
+        this.state.key = this.props.data.key;
         return (
-            <div className={"modal " + (this.state.show ? "show" : "hide")} tabIndex={-1} role="dialog">
+            <div className={"modal " + (this.props.data.show ? "show" : "hide")} tabIndex={-1} role="dialog">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">{this.state.mode}</h5>
+                            <h5 className="modal-title">{this.props.data.mode}</h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.onClose}>
                                 <span aria-hidden="true">×</span>
                             </button>
@@ -85,31 +72,31 @@ class UserEntry extends React.Component {
                                 <div className="form-group row">
                                     <label htmlFor="name" className="col-sm-2 col-form-label">Name</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control-plaintext" name="name" id="name" value={this.state.formData.name} onChange={this.handleChange} />
+                                        <input type="text" className="form-control-plaintext" name="name" id="name" value={this.props.data.formData.name} onChange={this.handleChange}  />
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <label htmlFor="age" className="col-sm-2 col-form-label">Age</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control-plaintext" name="age" id="age" value={this.state.formData.age} onChange={this.handleChange} />
+                                        <input type="text" className="form-control-plaintext" name="age" id="age" value={this.props.data.formData.age} onChange={this.handleChange} />
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <label htmlFor="department" className="col-sm-2 col-form-label">Department</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control-plaintext" name="department" id="department" value={this.state.formData.department} onChange={this.handleChange} />
+                                        <input type="text" className="form-control-plaintext" name="department" id="department" value={this.props.data.formData.department} onChange={this.handleChange} />
                                     </div>
                                 </div>
                                 <div className="form-group row">
                                     <label htmlFor="designation" className="col-sm-2 col-form-label">Designation</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control-plaintext" name="designation" id="designation" value={this.state.formData.designation} onChange={this.handleChange} />
+                                        <input type="text" className="form-control-plaintext" name="designation" id="designation" value={this.props.data.formData.designation} onChange={this.handleChange} />
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.onSubmit}>Save changes</button>
+                            <button type="button" className="btn btn-primary" onClick={this.onSubmit}>{(this.state.key==""?"Save":"Update")}</button>
                             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.onClose}>Close</button>
                         </div>
                     </div>
@@ -131,10 +118,12 @@ class User extends React.Component {
             onModalChange: this.onModalChange,
             showModal: false,
             modalMode: '',
-            modalData: {}
+            modalData: {name:'', age:'',designation:'',department:''}
         };
         this.newClick = this.newClick.bind(this);
-        this.entryModal = undefined;
+        this.onModalChange = this.onModalChange.bind(this);
+        this.getData = this.getData.bind(this);
+        this.resetModalData = this.resetModalData.bind(this);
     }
 
     getData() {
@@ -148,6 +137,25 @@ class User extends React.Component {
     componentDidMount() {
         this.getData()
     }
+
+    onModalChange(isChanged){
+        if (isChanged) {            
+            this.getData();
+        }
+        this.resetModalData();
+    }
+    resetModalData() {
+        this.setState({
+            modalDataKey: '',
+            showModal: false,
+            modalMode: '',
+            modalData: {name:'', age:'',designation:'',department:''}
+        });
+    }    
+
+    newClick(e) {
+        this.setState({ showModal: true, modalMode: "New",modalData: {name:'', age:'',designation:'',department:''} }); 
+    }   
 
     renderGridRows(users) {
         return (
@@ -200,17 +208,6 @@ class User extends React.Component {
     }
 
 
-    newClick(e) {
-        this.setState({ showModal: true, modalMode: "New" }, ()=> this.modalToggle());      
-    }
-
-    modalToggle() {
-        console.log(this.entryModal);
-        this.entryModal.toggle({ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData });
-    }
-
-    
-
     render() {
         return (
             <div className="container">
@@ -223,7 +220,7 @@ class User extends React.Component {
                     <div className="col-sm-12">{this.renderGrid(this.state.users)}
                     </div>
                 </div>
-                <UserEntry onRef={child => this.entryModal = child} data={{ parent:this,key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData, onChange: this.state.onModalChange }} />
+                <UserEntry onChange={this.state.onModalChange.bind(this)}  data={{key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData }} />
             </div>
         );
     }
