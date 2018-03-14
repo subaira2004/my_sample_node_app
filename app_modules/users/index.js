@@ -56,6 +56,26 @@ routes.get('/delete/:name', (req, res) => {
     });
 });
 
+
+routes.get('/delete/:name/ajax', (req, res) => {
+
+    var user = req.session ? req.session.user : null;
+    var filter = {
+        name: req.params.name
+    };
+
+    Students.DeleteSudent(function (err) {
+        console.log(err);
+    }, filter, function (deleteResult) {
+        if (deleteResult.ok == 1) {
+            res.json({success:true});
+        } else {
+            res.json({success:false,err:'Not Deleted! Something went wrong in DB!'});
+        }
+    });
+});
+
+
 routes.get('/edit/:name', (req, res) => {
     var user = req.session ? req.session.user : null;
     Students.GetStudentByName(function (err) {
@@ -92,6 +112,29 @@ routes.post('/edit', (req, res) => {
         });
     } else {
         res.redirect('/');
+    }
+});
+
+routes.post('/edit/:name/ajax', (req, res) => {
+    var user = req.session ? req.session.user : null;
+    var result = validateNGetPostData(req.body);
+    if (result.success) {
+        var data = result.data;
+        var filter = {
+            name: data.name
+        };
+
+        Students.UpdateSudent(function (err) {
+            console.log(err);
+        }, filter, data, function (updateResult) {
+            if (updateResult.result.ok == 1) {
+                res.json({success:true});
+            } else {
+                res.json({success:false,err:'Not updated! Something went wrong in DB!'});
+            }
+        });
+    } else {
+        res.json({success:false,err:'Something went wrong!'});
     }
 });
 
@@ -171,6 +214,16 @@ routes.get('/:name', (req, res) => {
             title: 'User',
             menu: 'users'
         });
+    });
+});
+
+routes.get('/:name/ajax', (req, res) => {
+    var user = req.session ? req.session.user : null;
+    Students.GetStudentByName(function (err) {
+        console.log(err);
+    }, req.params.name, function (users) {
+        var user = users.length > 0 ? users[0] : {};
+        res.json(user);        
     });
 });
 module.exports = routes;

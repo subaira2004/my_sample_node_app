@@ -15,11 +15,12 @@ class UserEntry extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onClose = this.onClose.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        
+
     }
 
     onSubmit(e) {
-        axios.post('/users/new/ajax', this.state.formData).then(res=>{
+        const url = this.state.key == '' ? '/users/new/ajax' : ('/users/edit/:' + this.state.key + '/ajax');
+        axios.post(url, this.state.formData).then(res => {
             if (res.data.success) {
                 this.resetModalData();
                 this.props.onChange(true);
@@ -36,27 +37,41 @@ class UserEntry extends React.Component {
 
     resetModalData() {
         this.setState({
-            formData: {name:'', age:'',designation:'',department:''}
+            formData: { name: '', age: '', designation: '', department: '' }
         });
     }
 
     handleChange(e) {
         const elem = e.target;
-    
-        this.setState((prevState,prop)=>{
+
+        this.setState((prevState, prop) => {
             const curFormData = prevState.formData;
-            curFormData[elem.name]= elem.value;
-            this.props.data.formData = curFormData; 
+            curFormData[elem.name] = elem.value;
+            this.props.data.formData = curFormData;
             return {
-                formData : curFormData            
+                formData: curFormData
             }
         });
         e.preventDefault();
     }
-    
+
+    renderName() {
+        if (this.props.data.key == '')
+            return (<input type="text" className="form-control-plaintext" name="name" id="name" value={this.props.data.formData.name} onChange={this.handleChange} />);
+        else
+            return (<input type="text" className="form-control-plaintext" name="name" id="name" value={this.props.data.formData.name} readOnly={true} />);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            key: nextProps.data.key,
+            formData: nextProps.data.formData,
+            show: nextProps.data.show,
+            mode:  nextProps.data.mode,
+        });
+    }
 
     render() {
-        this.state.key = this.props.data.key;
         return (
             <div className={"modal " + (this.props.data.show ? "show" : "hide")} tabIndex={-1} role="dialog">
                 <div className="modal-dialog" role="document">
@@ -72,7 +87,7 @@ class UserEntry extends React.Component {
                                 <div className="form-group row">
                                     <label htmlFor="name" className="col-sm-2 col-form-label">Name</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control-plaintext" name="name" id="name" value={this.props.data.formData.name} onChange={this.handleChange}  />
+                                        {this.renderName()}
                                     </div>
                                 </div>
                                 <div className="form-group row">
@@ -96,7 +111,7 @@ class UserEntry extends React.Component {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.onSubmit}>{(this.state.key==""?"Save":"Update")}</button>
+                            <button type="button" className="btn btn-primary" onClick={this.onSubmit}>{(this.props.data.key == "" ? "Save" : "Update")}</button>
                             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.onClose}>Close</button>
                         </div>
                     </div>
@@ -118,7 +133,7 @@ class User extends React.Component {
             onModalChange: this.onModalChange,
             showModal: false,
             modalMode: '',
-            modalData: {name:'', age:'',designation:'',department:''}
+            modalData: { name: '', age: '', designation: '', department: '' }
         };
         this.newClick = this.newClick.bind(this);
         this.onModalChange = this.onModalChange.bind(this);
@@ -134,12 +149,12 @@ class User extends React.Component {
             });
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.getData()
     }
 
-    onModalChange(isChanged){
-        if (isChanged) {            
+    onModalChange(isChanged) {
+        if (isChanged) {
             this.getData();
         }
         this.resetModalData();
@@ -149,13 +164,39 @@ class User extends React.Component {
             modalDataKey: '',
             showModal: false,
             modalMode: '',
-            modalData: {name:'', age:'',designation:'',department:''}
+            modalData: { name: '', age: '', designation: '', department: '' }
         });
-    }    
+    }
 
     newClick(e) {
-        this.setState({ showModal: true, modalMode: "New",modalData: {name:'', age:'',designation:'',department:''} }); 
-    }   
+        this.setState({ showModal: true, modalMode: "New", modalDataKey: '', modalData: { name: '', age: '', designation: '', department: '' } });
+    }
+
+    editUser(e) {
+        const userName = e.target.attributes.data.value;
+        const url = 'users/' + userName + '/ajax';
+
+        axios.get(url)
+            .then(res => {
+                if (res.data) {
+                    const userData = res.data;
+                    this.setState({ showModal: true, modalMode: "Edit", modalDataKey: userData.name, modalData: userData });
+                }
+            });
+    }
+
+    deleteUser(e) {
+        const userName = e.target.attributes.data.value;
+        const url = 'users/delete/' + userName + '/ajax';
+        if (confirm('Are you sure want to Delete ' + userName + '?')) {
+            axios.get(url)
+                .then(res => {
+                    if (res.data.success) {
+                        this.getData();
+                    }
+                });
+        }
+    }
 
     renderGridRows(users) {
         return (
@@ -175,8 +216,8 @@ class User extends React.Component {
                             {user.designation}
                         </td>
                         <td>
-                            <a href={"/users/edit/" + user.name} className="btn btn-primary" > Edit</a>&nbsp;
-                            <a href={"/users/delete/" + user.name} className="btn btn-primary"> delete</a>
+                            <a data={user.name} onClick={this.editUser.bind(this)} className="btn btn-primary" > Edit</a>&nbsp;
+                            <a data={user.name} onClick={this.deleteUser.bind(this)} className="btn btn-primary"> delete</a>
                         </td>
                     </tr>
             )
@@ -220,7 +261,7 @@ class User extends React.Component {
                     <div className="col-sm-12">{this.renderGrid(this.state.users)}
                     </div>
                 </div>
-                <UserEntry onChange={this.state.onModalChange.bind(this)}  data={{key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData }} />
+                <UserEntry onChange={this.state.onModalChange.bind(this)} data={{ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData }} />
             </div>
         );
     }
