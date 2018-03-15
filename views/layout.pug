@@ -6,11 +6,12 @@ html
         meta( http-equiv="X-UA-Compatible" content="ie=edge")
         title #{title}
         base(href="/")
+        link( rel="stylesheet" type="text/css" href="../css/bootstrap.css")
+        link( rel="stylesheet" type="text/css" href="../css/common.css")
         block csses
-            link( rel="stylesheet" type="text/css" href="../css/bootstrap.css")
+        script( src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+        script( src="../js/bootstrap.js")
         block scripts
-            script( src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
-            script( src="../js/bootstrap.js")
     body
         nav( class="navbar navbar-default navbar-static-top")
             div(class="container-fluid")

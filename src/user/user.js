@@ -2,6 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
+class AjaxLoader extends React.Component {
+    render() {
+        return (
+            <div className={"ajax-loader" + (this.props.show ? " show" : " hide")}>
+                <img src="images/ajax-loader.gif" className="ajax-loader-img" />
+            </div>
+        );
+    }
+}
 
 class UserEntry extends React.Component {
     constructor(props) {
@@ -19,13 +28,15 @@ class UserEntry extends React.Component {
     }
 
     onSubmit(e) {
-        const url = this.state.key == '' ? '/users/new/ajax' : ('/users/edit/:' + this.state.key + '/ajax');
-        axios.post(url, this.state.formData).then(res => {
-            if (res.data.success) {
-                this.resetModalData();
-                this.props.onChange(true);
-            }
-        })
+        this.curSubmiturl = this.state.key == '' ? '/users/new/ajax' : ('/users/edit/:' + this.state.key + '/ajax');
+        this.props.onShowLoader(() => {
+            axios.post( this.curSubmiturl, this.state.formData).then(res => {
+                if (res.data.success) {
+                    this.resetModalData();
+                    this.props.onChange(true);
+                }
+            });
+        });
         e.preventDefault();
     }
 
@@ -67,13 +78,13 @@ class UserEntry extends React.Component {
             key: nextProps.data.key,
             formData: nextProps.data.formData,
             show: nextProps.data.show,
-            mode:  nextProps.data.mode,
+            mode: nextProps.data.mode,
         });
     }
 
     render() {
         return (
-            <div className={"modal " + (this.props.data.show ? "show" : "hide")} tabIndex={-1} role="dialog">
+            <div className={"modal show slider " + (this.props.data.show ? "slider-up" : "slider-down")} tabIndex={-1} role="dialog">
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -128,6 +139,7 @@ class User extends React.Component {
 
 
         this.state = {
+            showLoader: false,
             users: this.props.users,
             modalDataKey: '',
             onModalChange: this.onModalChange,
@@ -142,11 +154,20 @@ class User extends React.Component {
     }
 
     getData() {
-        axios.get(`users/json`)
-            .then(res => {
-                const users = res.data;
-                this.setState({ users: users });
-            });
+        this.setState({ showLoader: true }, () => {
+            axios.get(`users/json`)
+                .then(res => {
+                    const users = res.data;
+                    this.setState({ users: users, showLoader: false });
+                });
+        });
+    }
+
+    showLoader(callback) {
+        if (callback)
+            this.setState({ showLoader: true }, callback);
+        else
+            this.setState({ showLoader: true });
     }
 
     componentWillMount() {
@@ -173,28 +194,33 @@ class User extends React.Component {
     }
 
     editUser(e) {
-        const userName = e.target.attributes.data.value;
+        this.editUserName = e.target.attributes.data.value;
+        this.showLoader(()=>{
+        const userName = this.editUserName;
         const url = 'users/' + userName + '/ajax';
 
         axios.get(url)
             .then(res => {
                 if (res.data) {
                     const userData = res.data;
-                    this.setState({ showModal: true, modalMode: "Edit", modalDataKey: userData.name, modalData: userData });
+                    this.setState({ showLoader: false,showModal: true, modalMode: "Edit", modalDataKey: userData.name, modalData: userData });
                 }
             });
+        });
     }
 
     deleteUser(e) {
-        const userName = e.target.attributes.data.value;
-        const url = 'users/delete/' + userName + '/ajax';
-        if (confirm('Are you sure want to Delete ' + userName + '?')) {
-            axios.get(url)
+        this.delUserName = e.target.attributes.data.value;
+        this.delUrl = 'users/delete/' + this.delUserName + '/ajax';
+        if (confirm('Are you sure want to Delete ' + this.delUserName + '?')) {
+            this.showLoader(()=>{
+            axios.get( this.delUrl )
                 .then(res => {
                     if (res.data.success) {
                         this.getData();
                     }
                 });
+            });
         }
     }
 
@@ -261,7 +287,8 @@ class User extends React.Component {
                     <div className="col-sm-12">{this.renderGrid(this.state.users)}
                     </div>
                 </div>
-                <UserEntry onChange={this.state.onModalChange.bind(this)} data={{ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData }} />
+                <UserEntry onShowLoader={this.showLoader.bind(this)} onChange={this.state.onModalChange.bind(this)} data={{ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData }} />
+                <AjaxLoader show={this.state.showLoader} />
             </div>
         );
     }

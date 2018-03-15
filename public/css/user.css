@@ -1,0 +1,13 @@
+.slider{
+	transition-property: all;
+	transition-duration: .5s;
+	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+.slider.slider-up{
+	top:0px;  
+	bottom:0px; 
+}
+.slider.slider-down{
+	top:-100vh;    
+	bottom:auto;
+}
