@@ -1,0 +1,14 @@
+.ajax-loader{
+    position: fixed;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    top:0px;
+    z-index:100000;
+    opacity: 20%;
+}
+.ajax-loader .ajax-loader-img{
+    margin-top:20%;
+    margin-left: 45%;
+    width:100px;
+}
