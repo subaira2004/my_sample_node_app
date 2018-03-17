@@ -7,11 +7,15 @@ var url = 'mongodb://stdrw:sa@localhost:27017/CollageDB?authMechanism=DEFAULT&au
 module.exports = function (errs, callback) {
     try {
         // Use connect method to connect to the server
-        MongoClient.connect(url, function (err, client) {
+        MongoClient.connect(url,
+            {
+                reconnectTries: Number.MAX_VALUE,
+                reconnectInterval: 1000
+            },
+             function (err, client) {
             try {
                 assert.equal(null, err);                
                 callback(client.db("CollageDB"));
-                client.close();
             }
             catch (error) {
              
