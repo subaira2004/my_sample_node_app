@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Pager from "../pager/pager.js";
 import axios from 'axios';
 
 class AjaxLoader extends React.Component {
@@ -30,7 +31,7 @@ class UserEntry extends React.Component {
     onSubmit(e) {
         this.curSubmiturl = this.state.key == '' ? '/users/new/ajax' : ('/users/edit/:' + this.state.key + '/ajax');
         this.props.onShowLoader(() => {
-            axios.post( this.curSubmiturl, this.state.formData).then(res => {
+            axios.post(this.curSubmiturl, this.state.formData).then(res => {
                 if (res.data.success) {
                     this.resetModalData();
                     this.props.onChange(true);
@@ -145,7 +146,12 @@ class User extends React.Component {
             onModalChange: this.onModalChange,
             showModal: false,
             modalMode: '',
-            modalData: { name: '', age: '', designation: '', department: '' }
+            modalData: { name: '', age: '', designation: '', department: '' },
+            pager: {
+                currentPage: 1,
+                records: 0,
+                pageSize: 10
+            }
         };
         this.newClick = this.newClick.bind(this);
         this.onModalChange = this.onModalChange.bind(this);
@@ -155,10 +161,11 @@ class User extends React.Component {
 
     getData() {
         this.setState({ showLoader: true }, () => {
-            axios.get(`users/json`)
+            axios.get(`users/json?currentPage=` + this.state.pager.currentPage + '&pageSize=' + this.state.pager.pageSize)
                 .then(res => {
-                    const users = res.data;
-                    this.setState({ users: users, showLoader: false });
+                    const users = res.data.users;
+                    const pagerNew = { currentPage: res.data.currentPage, pageSize: res.data.pageSize, records: res.data.records }
+                    this.setState({ users: users, showLoader: false,pager:pagerNew });
                 });
         });
     }
@@ -195,17 +202,17 @@ class User extends React.Component {
 
     editUser(e) {
         this.editUserName = e.target.attributes.data.value;
-        this.showLoader(()=>{
-        const userName = this.editUserName;
-        const url = 'users/' + userName + '/ajax';
+        this.showLoader(() => {
+            const userName = this.editUserName;
+            const url = 'users/' + userName + '/ajax';
 
-        axios.get(url)
-            .then(res => {
-                if (res.data) {
-                    const userData = res.data;
-                    this.setState({ showLoader: false,showModal: true, modalMode: "Edit", modalDataKey: userData.name, modalData: userData });
-                }
-            });
+            axios.get(url)
+                .then(res => {
+                    if (res.data) {
+                        const userData = res.data;
+                        this.setState({ showLoader: false, showModal: true, modalMode: "Edit", modalDataKey: userData.name, modalData: userData });
+                    }
+                });
         });
     }
 
@@ -213,15 +220,28 @@ class User extends React.Component {
         this.delUserName = e.target.attributes.data.value;
         this.delUrl = 'users/delete/' + this.delUserName + '/ajax';
         if (confirm('Are you sure want to Delete ' + this.delUserName + '?')) {
-            this.showLoader(()=>{
-            axios.get( this.delUrl )
-                .then(res => {
-                    if (res.data.success) {
-                        this.getData();
-                    }
-                });
+            this.showLoader(() => {
+                axios.get(this.delUrl)
+                    .then(res => {
+                        if (res.data.success) {
+                            this.getData();
+                        }
+                    });
             });
         }
+    }
+
+    onPagerPaging(goToPage) {
+        this.goToPage = goToPage;
+        this.setState((prevSate, props) => {
+            const pagerNew = prevSate.pager;
+            pagerNew.currentPage = this.goToPage;
+            return {
+                pager: pagerNew
+            }
+        },
+            this.getData()
+        )
     }
 
     renderGridRows(users) {
@@ -287,6 +307,7 @@ class User extends React.Component {
                     <div className="col-sm-12">{this.renderGrid(this.state.users)}
                     </div>
                 </div>
+                <Pager records={this.state.pager.records} pageSize={this.state.pager.pageSize} currentPage={this.state.pager.currentPage} onPaging={this.onPagerPaging.bind(this)} />
                 <UserEntry onShowLoader={this.showLoader.bind(this)} onChange={this.state.onModalChange.bind(this)} data={{ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData }} />
                 <AjaxLoader show={this.state.showLoader} />
             </div>
