@@ -14,13 +14,13 @@ export default class Pager extends React.Component {
         }
 
     }
+    
     calcTotalPages(totalRecords, pageSize) {
-        return (Math.trunc(totalRecords / pageSize) + (totalRecords % pageSize));
+        return (Math.trunc(totalRecords / pageSize) + ((totalRecords % pageSize) > 0 ? 1 : 0));
     }
 
     componentWillReceiveProps(nextProps) {
         const totPages = this.calcTotalPages(nextProps.records, nextProps.pageSize);
-       // var CurPage = (this.state.pageSize != nextProps.pageSize || this.state.records != nextProps.records) ? 1 : this.state.currentPage;
         this.setState({
             totalRecords: nextProps.records,
             pageSize: nextProps.pageSize,
@@ -38,11 +38,27 @@ export default class Pager extends React.Component {
         });
     }
 
+    disabledClick(e) {
+        e.preventdefault();
+        return false;
+    }
+
     renderPages() {
-        const maxPage = this.state.totalPages > 5 ? 5 : this.state.totalPages;
         const pagesNum = []
-        for (let i = 1; i <= maxPage; i++) {
-            pagesNum.push(<li key={i}  className={(this.state.currentPage == num ? "active" : "")} ><a data={num} onClick={this.goToPage.bind(this)}>{num}</a></li>);
+        let loop = 1;
+        if (this.state.currentPage <= 3 || this.state.totalPages <= 5) {
+            loop = 1
+        }
+        else if (this.state.currentPage >= (this.state.totalPages - 2)) {
+            loop = (this.state.totalPages - 4);
+        }
+        else {
+            loop = (this.state.currentPage - 2);
+        }
+        const maxPage = this.state.totalPages <= 5 ? this.state.totalPages : (loop + 4);
+
+        for (let i = loop; i <= maxPage; i++) {
+            pagesNum.push(<li key={i} className={(this.state.currentPage == i ? "active" : "")} ><a data={i} onClick={((this.state.currentPage == i)?this.disabledClick.bind(this):this.goToPage.bind(this))}>{i}</a></li>);
         }
         return pagesNum;
     }
@@ -52,13 +68,13 @@ export default class Pager extends React.Component {
         if (this.state.currentPage < this.state.totalPages) {
             return (
                 [
-                    <li>
-                        <a href="#" data={thus.state.currentPage + 1} aria-label="Next" onClick={this.goToPage.bind(this)}>
+                    <li key="next">
+                        <a data={parseInt(this.state.currentPage) + 1} aria-label="Next" onClick={this.goToPage.bind(this)}>
                             <span aria-hidden="true">››</span>
                         </a>
                     </li>,
-                    <li>
-                        <a href="#" data={this.state.currentPage - 1} onClick={this.goToPage.bind(this)} aria-label="Last">
+                    <li key="last">
+                        <a data={this.state.totalPages} onClick={this.goToPage.bind(this)} aria-label="Last">
                             <span aria-hidden="true">››|</span>
                         </a>
                     </li>
@@ -67,13 +83,13 @@ export default class Pager extends React.Component {
         }
         else {
             return ([
-                <li className="disabled">
-                    <a href="#" aria-label="Next">
+                <li key="next" className="disabled">
+                    <a onClick={this.disabledClick.bind(this)} aria-label="Next">
                         <span aria-hidden="true">››</span>
                     </a>
                 </li>,
-                <li className="disabled" >
-                    <a href="#" aria-label="Last" >
+                <li key="last" className="disabled" >
+                    <a onClick={this.disabledClick.bind(this)} aria-label="Last" >
                         <span aria-hidden="true">››|</span>
                     </a>
                 </li>
@@ -85,13 +101,13 @@ export default class Pager extends React.Component {
         if (this.state.currentPage > 1) {
             return (
                 [
-                    <li>
-                        <a href="#" data="1" aria-label="First" onClick={this.goToPage.bind(this)}>
+                    <li key="first">
+                        <a data="1" aria-label="First" onClick={this.goToPage.bind(this)}>
                             <span aria-hidden="true">|‹‹</span>
                         </a>
                     </li>,
-                    <li>
-                        <a href="#" data={this.state.currentPage - 1} onClick={this.goToPage.bind(this)} aria-label="Previous">
+                    <li key="prev">
+                        <a data={parseInt(this.state.currentPage) - 1} onClick={this.goToPage.bind(this)} aria-label="Previous">
                             <span aria-hidden="true">‹‹</span>
                         </a>
                     </li>
@@ -100,13 +116,13 @@ export default class Pager extends React.Component {
         }
         else {
             return ([
-                <li className="disabled">
-                    <a href="#" aria-label="First">
+                <li key="first" className="disabled">
+                    <a onClick={this.disabledClick.bind(this)} aria-label="First">
                         <span aria-hidden="true">|‹‹</span>
                     </a>
                 </li>,
-                <li className="disabled" >
-                    <a href="#" aria-label="Previous" >
+                <li key="prev" className="disabled" >
+                    <a onClick={this.disabledClick.bind(this)} aria-label="Previous" >
                         <span aria-hidden="true">‹‹</span>
                     </a>
                 </li>
@@ -121,11 +137,6 @@ export default class Pager extends React.Component {
                     {this.renderPrevPages()}
                     {this.renderPages()}
                     {this.renderNextPages()}
-                    <li>
-                        <a href="#" aria-label="Next">
-                            <span aria-hidden="true">»</span>
-                        </a>
-                    </li>
                 </ul>
             </nav>
         );

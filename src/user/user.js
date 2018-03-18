@@ -165,7 +165,7 @@ class User extends React.Component {
                 .then(res => {
                     const users = res.data.users;
                     const pagerNew = { currentPage: res.data.currentPage, pageSize: res.data.pageSize, records: res.data.records }
-                    this.setState({ users: users, showLoader: false });
+                    this.setState({ users: users, showLoader: false,pager:pagerNew });
                 });
         });
     }
@@ -307,7 +307,7 @@ class User extends React.Component {
                     <div className="col-sm-12">{this.renderGrid(this.state.users)}
                     </div>
                 </div>
-                <Pager record={this.state.pager.records} pageSize={this.state.pager.pageSize} currentPage={this.state.pager.currentPage} onPaging={this.onPagerPaging.bind(this)} />
+                <Pager records={this.state.pager.records} pageSize={this.state.pager.pageSize} currentPage={this.state.pager.currentPage} onPaging={this.onPagerPaging.bind(this)} />
                 <UserEntry onShowLoader={this.showLoader.bind(this)} onChange={this.state.onModalChange.bind(this)} data={{ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData }} />
                 <AjaxLoader show={this.state.showLoader} />
             </div>
