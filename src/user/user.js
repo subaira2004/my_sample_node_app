@@ -74,6 +74,14 @@ class UserEntry extends React.Component {
             return (<input type="text" className="form-control-plaintext" name="name" id="name" value={this.props.data.formData.name} readOnly={true} />);
     }
 
+    renderAction()
+    {
+        if (this.state.mode!="View")
+            return (<button type="button" className="btn btn-primary" onClick={this.onSubmit}>{(this.props.data.key == "" ? "Save" : "Update")}</button>);
+        else
+            return (<span/>);
+    }
+
     componentWillReceiveProps(nextProps) {
         this.setState({
             key: nextProps.data.key,
@@ -123,7 +131,7 @@ class UserEntry extends React.Component {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={this.onSubmit}>{(this.props.data.key == "" ? "Save" : "Update")}</button>
+                            {this.renderAction()}                   
                             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.onClose}>Close</button>
                         </div>
                     </div>
@@ -216,6 +224,22 @@ class User extends React.Component {
         });
     }
 
+    viewUser(e) {
+        this.viewUserName = e.target.attributes.data.value;
+        this.showLoader(() => {
+            const userName = this.viewUserName;
+            const url = 'users/' + userName + '/ajax';
+
+            axios.get(url)
+                .then(res => {
+                    if (res.data) {
+                        const userData = res.data;
+                        this.setState({ showLoader: false, showModal: true, modalMode: "View", modalDataKey: userData.name, modalData: userData });
+                    }
+                });
+        });
+    }
+
     deleteUser(e) {
         this.delUserName = e.target.attributes.data.value;
         this.delUrl = 'users/delete/' + this.delUserName + '/ajax';
@@ -250,7 +274,7 @@ class User extends React.Component {
                 (user) =>
                     <tr key={user.name}>
                         <td>
-                            <a href={"/users/" + user.name} > {user.name}</a>
+                            <a data={user.name} onClick={this.viewUser.bind(this)} > {user.name}</a>
                         </td>
                         <td>
                             {user.age}
@@ -304,10 +328,11 @@ class User extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-sm-12">{this.renderGrid(this.state.users)}
+                    <div className="col-sm-12">
+                        <Pager records={this.state.pager.records} pageSize={this.state.pager.pageSize} currentPage={this.state.pager.currentPage} onPaging={this.onPagerPaging.bind(this)} />
+                        {this.renderGrid(this.state.users)}
                     </div>
                 </div>
-                <Pager records={this.state.pager.records} pageSize={this.state.pager.pageSize} currentPage={this.state.pager.currentPage} onPaging={this.onPagerPaging.bind(this)} />
                 <UserEntry onShowLoader={this.showLoader.bind(this)} onChange={this.state.onModalChange.bind(this)} data={{ key: this.state.modalDataKey, show: this.state.showModal, mode: this.state.modalMode, formData: this.state.modalData }} />
                 <AjaxLoader show={this.state.showLoader} />
             </div>
