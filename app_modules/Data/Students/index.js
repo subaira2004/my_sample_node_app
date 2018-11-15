@@ -8,7 +8,7 @@ var GetAllStudents = function (errs, pageSize, currentPage, callback) {
         var limit = parseInt(pageSize);
         database(errs, function (db) {
             var Students = db.collection('Students');
-            Students.count(function (err, count) {
+            Students.countDocuments(function (err, count) {
                 assert.equal(null, err);
                 result.records = count;
                 var cursor = Students.find({}).skip(skip).limit(limit);

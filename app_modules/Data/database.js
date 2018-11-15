@@ -9,6 +9,7 @@ module.exports = function (errs, callback) {
         // Use connect method to connect to the server
         MongoClient.connect(url,
             {
+                useNewUrlParser: true,
                 reconnectTries: Number.MAX_VALUE,
                 reconnectInterval: 1000
             },
