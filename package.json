@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack && node app"
+    "start": "webpack && node app",
+    "build":"webpack && node app"
   },
   "author": "Zubair",
   "license": "ISC",
